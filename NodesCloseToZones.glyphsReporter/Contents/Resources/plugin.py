@@ -3,7 +3,7 @@
 ###########################################################################################################
 #
 #	by Olli Meier
-#	Reporter Plugin: Show Node Close To Alignmentzone
+#	Reporter Plugin: Show Nodes Close To Alignmentzone
 #
 #	Read the docs:
 #	https://github.com/schriftgestalt/GlyphsSDK/tree/master/Python%20Templates/Reporter
@@ -69,8 +69,8 @@ def drawTriangle(node):
 	myPath.transformUsingAffineTransform_(t)
 	myPath.fill()
 
-def nodeHasIssues(i, path, node):
-	hasIssues = False
+def extremPoint(i, path, node):
+	xPoint = False
 	# make it more spart with checking the node before and after if offcurve point or not.
 	try:
 		nodeBefore = path.nodes[i-1]
@@ -83,40 +83,40 @@ def nodeHasIssues(i, path, node):
 
 	if (nodeBefore and nodeAfter):
 		if nodeBefore.type != 'offcurve' and nodeAfter.type != 'offcurve':
-			hasIssues = True
+			xPoint = True
 
 		if nodeBefore.type == 'offcurve' and nodeAfter.type == 'offcurve':
 			if closeEnough(node.y, nodeBefore.y, 10) or closeEnough(node.y, nodeAfter.y, 10):
-				hasIssues = True
+				xPoint = True
 
 		if nodeBefore.type == 'offcurve' and nodeAfter.type != 'offcurve':
 			if closeEnough(node.y, nodeBefore.y, 10):
-				hasIssues = True
+				xPoint = True
 
 		if nodeBefore.type != 'offcurve' and nodeAfter.type == 'offcurve':
 			if closeEnough(node.y, nodeAfter.y, 10):
-				hasIssues = True
+				xPoint = True
 
 	elif nodeBefore and not nodeAfter:
 		if nodeBefore.type != 'offcurve':
-			hasIssues = True
+			xPoint = True
 
 		if nodeBefore.type == 'offcurve':
 			if closeEnough(node.y, nodeBefore.y, 10):
-				hasIssues = True
+				xPoint = True
 
 	elif nodeAfter and not nodeBefore:
 		if nodeAfter.type != 'offcurve':
-			hasIssues = True
+			xPoint = True
 
 		if nodeAfter.type == 'offcurve':
 			if closeEnough(node.y, nodeAfter.y, 10):
-				hasIssues = True
+				xPoint = True
 
 	else:
-		hasIssues = True
+		xPoint = True
 
-	if hasIssues:
+	if xPoint:
 		return True
 	else:
 		return False
@@ -138,7 +138,7 @@ class nodesCloseToZone(ReporterPlugin):
 				for zone in master.alignmentZones:
 					if node.type != 'offcurve':
 						if closeToArea(tolerance, zone.position, zone.size, node.y):
-							if nodeHasIssues(i, path, node):
+							if extremPoint(i, path, node):
 								self.drawTextAtPoint('Close to Alignmentzone', NSPoint(node.x, node.y))
 
 	def drawShape(self, layer):
@@ -150,7 +150,7 @@ class nodesCloseToZone(ReporterPlugin):
 				for zone in master.alignmentZones:
 					if node.type != 'offcurve':
 						if closeToArea(tolerance, zone.position, zone.size, node.y):
-							if nodeHasIssues(i, path, node):
+							if extremPoint(i, path, node):
 								drawTriangle(node)
 
 
@@ -166,7 +166,7 @@ class nodesCloseToZone(ReporterPlugin):
 						for zone in master.alignmentZones:
 							if node.type != 'offcurve':
 								if closeToArea(tolerance, zone.position, zone.size, node.y):
-									hasIssues = nodeHasIssues(i, path, node)
+									hasIssues = extremPoint(i, path, node)
 			if hasIssues:
 				collectNames += '/%s' %g.name
 
