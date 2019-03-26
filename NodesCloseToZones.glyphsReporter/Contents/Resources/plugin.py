@@ -33,7 +33,7 @@ def closeToArea(tol, pos, size, y):
 			return False
 	else:
 		pos1 = pos
-		pos2 = pos + tol	
+		pos2 = pos + tol
 
 		size1 = pos + size - tol
 		size2 = pos + size 
@@ -71,7 +71,7 @@ def drawTriangle(node):
 
 def extremPoint(i, path, node):
 	xPoint = False
-	# make it more spart with checking the node before and after if offcurve point or not.
+	# make it more smart with checking the node before and after if offcurve point or not.
 	try:
 		nodeBefore = path.nodes[i-1]
 	except:
