@@ -19,29 +19,20 @@ from math import atan2, cos, pi, sin, degrees
 tolerance = 4
 
 def closeToArea(tol, pos, size, y):
-
-	if size >= 0:
-		pos1 = pos - tol
-		pos2 = pos
-
-		size1 = pos + size
-		size2 = size1 + tol
-	
-		if y >= pos1 and y < pos2 or y > size1 and y <= size2:
-			return True
-		else:
-			return False
+	bottom = pos
+	top = pos + size
+	if size < 0:
+		bottom = pos - size
+		top = pos
 	else:
-		pos1 = pos
-		pos2 = pos + tol
-
-		size1 = pos + size - tol
-		size2 = pos + size 
+		bottom = pos
+		top = pos + size
 	
-		if (y > pos1 and y <= pos2) or (y >= size1 and y < size2):
-			return True
-		else:
-			return False
+	if y < bottom and y + tol > bottom:
+		return True
+	if y > top and y - tol < top:
+		return True
+	return False
 
 def closeEnough(value1, value2, tolerance):
 	diff = value1 - value2
