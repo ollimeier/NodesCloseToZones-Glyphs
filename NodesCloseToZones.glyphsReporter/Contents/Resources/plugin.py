@@ -121,6 +121,17 @@ def extremPoint(i, path, node):
 	else:
 		return False
 
+def allnodesWithIssues(layer):
+	nodes = []
+	master = layer.associatedFontMaster()
+	for path in layer.paths:
+		for i, node in enumerate(path.nodes):
+			if node.type != 'offcurve':
+				for zone in master.alignmentZones:
+					if closeToArea(tolerance, zone.position, zone.size, node.y):
+						if extremPoint(i, path, node):
+							nodes.append(node)
+	return nodes
 
 class nodesCloseToZone(ReporterPlugin):
 
@@ -131,45 +142,33 @@ class nodesCloseToZone(ReporterPlugin):
 		]
 
 	def drawText(self, layer):
-		font = Glyphs.font
-		for path in layer.paths:
-			for i, node in enumerate(path.nodes):
-				master = layer.associatedFontMaster()
-				for zone in master.alignmentZones:
-					if node.type != 'offcurve':
-						if closeToArea(tolerance, zone.position, zone.size, node.y):
-							if extremPoint(i, path, node):
-								self.drawTextAtPoint('Close to Alignmentzone', NSPoint(node.x, node.y))
+
+		nodesWithIssues = allnodesWithIssues(layer)
+		for node in nodesWithIssues:
+			self.drawTextAtPoint('Close to Alignmentzone', NSPoint(node.x, node.y))
 
 	def drawShape(self, layer):
-		#font = NSApplication.sharedApplication().font
-		font = Glyphs.font
-		for path in layer.paths:
-			for i, node in enumerate(path.nodes):
-				master = layer.associatedFontMaster()
-				for zone in master.alignmentZones:
-					if node.type != 'offcurve':
-						if closeToArea(tolerance, zone.position, zone.size, node.y):
-							if extremPoint(i, path, node):
-								drawTriangle(node)
-
+		nodesWithIssues = allnodesWithIssues(layer)
+		for node in nodesWithIssues:
+			drawTriangle(node)
 
 	def newTabNodesCloseToZone(self):
 		font = Glyphs.font
-		collectNames = ''
+		collectNames = []
 		for g in font.glyphs:
 			hasIssues = False
 			for layer in g.layers:
+				master = layer.associatedFontMaster()
 				for path in layer.paths:
 					for i, node in enumerate(path.nodes):
-						master = layer.associatedFontMaster()
-						for zone in master.alignmentZones:
-							if node.type != 'offcurve':
+						if node.type != 'offcurve':
+							for zone in master.alignmentZones:
 								if closeToArea(tolerance, zone.position, zone.size, node.y):
 									hasIssues = extremPoint(i, path, node)
+									break
 			if hasIssues:
-				collectNames += '/%s' %g.name
-
+				collectNames.append('/%s' % g.name)
+		collectNames = "".join(collectNames)
 		font.newTab(collectNames)
 
 	def foreground(self, layer):
