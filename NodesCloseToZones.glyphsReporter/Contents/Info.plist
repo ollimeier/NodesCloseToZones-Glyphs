@@ -23,7 +23,7 @@
 	<key>UpdateFeedURL</key>
 	<string>http://olli-meier.de</string>
 	<key>productPageURL</key>
-	<string>http://github: olli-meier.de</string>
+	<string>https://github.com/moontypespace/omPlugins/tree/master/NodesCloseToZones.glyphsReporter</string>
 	<key>productReleaseNotes</key>
 	<string>This is the first Release</string>
 	<key>NSHumanReadableCopyright</key>
