@@ -8,6 +8,6 @@ The very first plugin is called 'Nodes Close To Alignmentzone'. It highlights no
 <img src="https://github.com/moontypespace/omPlugins/blob/master/screenshot_nodesHighlighted.png" alt="Nodes Close To Zone Example">
 </p> 
 
-<p align="center">
-<img src="https://github.com/moontypespace/omPlugins/blob/master/screenshot_ContextMenu.png" alt="Nodes Close To Zone Context Menu" width="20%" >
+<p align="left">
+<img src="https://github.com/moontypespace/omPlugins/blob/master/screenshot_ContextMenu.png" alt="Nodes Close To Zone Context Menu" width="40%" >
 </p> 
