@@ -1,4 +1,4 @@
-# omPlugins
+# NodesCloseToZones
 
 This is a repository for possible future plugins for GlyphsApp by Olli Meier.
 
