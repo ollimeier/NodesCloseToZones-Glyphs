@@ -42,8 +42,8 @@ def closeEnough(value1, value2, tolerance):
 	else:
 		return False
 
-def drawTriangle(node):
-	size = 5
+def drawTriangle(node, scale):
+	size = 5 * scale
 	position = (node.x, node.y)
 	x, y = position
 
@@ -133,15 +133,15 @@ class nodesCloseToZone(ReporterPlugin):
 		]
 
 	def drawText(self, layer):
-
 		nodesWithIssues = allnodesWithIssues(layer)
 		for node in nodesWithIssues:
 			self.drawTextAtPoint('Close to Alignmentzone', NSPoint(node.x, node.y))
 
 	def drawShape(self, layer):
+		scale =  1#0.5 / self.getScale()
 		nodesWithIssues = allnodesWithIssues(layer)
 		for node in nodesWithIssues:
-			drawTriangle(node)
+			drawTriangle(node, scale)
 
 	def newTabNodesCloseToZone(self):
 		font = Glyphs.font
