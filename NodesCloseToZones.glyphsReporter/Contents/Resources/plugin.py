@@ -123,7 +123,11 @@ def extremPoint(i, path, node):
 
 def allnodesWithIssues(layer):
 	nodes = []
+
 	master = layer.associatedFontMaster()
+	if layer.hasCorners():
+		layer = layer.copyDecomposedLayer() #orphan layer
+
 	for path in layer.paths:
 		for i, node in enumerate(path.nodes):
 			if node.type != 'offcurve':
