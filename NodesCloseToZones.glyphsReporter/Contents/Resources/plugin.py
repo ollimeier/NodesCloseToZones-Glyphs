@@ -83,7 +83,8 @@ def extremPoint(i, path, node):
 
 	if (nodeBefore and nodeAfter):
 		if nodeBefore.type != 'offcurve' and nodeAfter.type != 'offcurve':
-			xPoint = True
+			if closeEnough(node.y, nodeBefore.y, 20) or closeEnough(node.y, nodeAfter.y, 20):
+				xPoint = True
 
 		if nodeBefore.type == 'offcurve' and nodeAfter.type == 'offcurve':
 			if closeEnough(node.y, nodeBefore.y, 10) or closeEnough(node.y, nodeAfter.y, 10):
