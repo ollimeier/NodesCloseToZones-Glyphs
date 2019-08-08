@@ -179,10 +179,6 @@ class nodesCloseToZone(ReporterPlugin):
 			#if hasIssues:
 			#	collectNames.append('/%s' % g.name)
 		#collectNames = "".join(collectNames)
-
-		print ('len(collectNames): ', len(collectNames))
-		print ('len(collectLayerID): ', len(collectLayerID))
-
 		#font.newTab(collectNames)
 
 		Glyphs.currentDocument.windowController().addTabWithString_("".join(collectNames))
