@@ -12,6 +12,7 @@
 ###########################################################################################################
 
 import objc
+from AppKit import NSRange
 from GlyphsApp import *
 from GlyphsApp.plugins import *
 from math import atan2, cos, pi, sin, degrees
@@ -160,9 +161,10 @@ class nodesCloseToZone(ReporterPlugin):
 	def newTabNodesCloseToZone(self):
 		font = Glyphs.font
 		collectNames = []
+		collectLayerID = []
 		for g in font.glyphs:
-			hasIssues = False
 			for layer in g.layers:
+				hasIssues = False
 				master = layer.associatedFontMaster()
 				for path in layer.paths:
 					for i, node in enumerate(path.nodes):
@@ -171,10 +173,27 @@ class nodesCloseToZone(ReporterPlugin):
 								if closeToArea(tolerance, zone.position, zone.size, node.y):
 									hasIssues = extremPoint(i, path, node)
 									break
-			if hasIssues:
-				collectNames.append('/%s' % g.name)
-		collectNames = "".join(collectNames)
-		font.newTab(collectNames)
+				if hasIssues:
+					collectNames.append('/%s' % g.name)
+					collectLayerID.append(layer.layerId)
+			#if hasIssues:
+			#	collectNames.append('/%s' % g.name)
+		#collectNames = "".join(collectNames)
+
+		print ('len(collectNames): ', len(collectNames))
+		print ('len(collectLayerID): ', len(collectLayerID))
+
+		#font.newTab(collectNames)
+
+		Glyphs.currentDocument.windowController().addTabWithString_("".join(collectNames))
+		for i, character in enumerate(collectNames):
+			rangeHighest = NSRange()
+			rangeHighest.location = i
+			rangeHighest.length = 1
+			currentEditViewController = Glyphs.currentDocument.windowController().activeEditViewController()
+			currentTab = currentEditViewController.graphicView()
+			Attributes = { "GSLayerIdAttrib": collectLayerID[i] }
+			currentTab.textStorage().text().addAttributes_range_( Attributes, rangeHighest )
 
 	def foreground(self, layer):
 		self.drawText(layer)
