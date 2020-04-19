@@ -3,9 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
-	<string>English</string>
-	<key>CFBundleDisplayName</key>
-	<string>Nodes Close To Alignmentzone</string>
+	<string>en</string>
 	<key>CFBundleExecutable</key>
 	<string>plugin</string>
 	<key>CFBundleIdentifier</key>
@@ -17,22 +15,22 @@
 	<key>CFBundlePackageType</key>
 	<string>BNDL</string>
 	<key>CFBundleVersion</key>
-	<string>11</string>
+	<string>12</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.1</string>
+	<string>2.0</string>
 	<key>UpdateFeedURL</key>
 	<string>http://olli-meier.de</string>
 	<key>productPageURL</key>
 	<string>https://github.com/moontypespace/omPlugins/tree/master/NodesCloseToZones.glyphsReporter</string>
 	<key>productReleaseNotes</key>
-	<string>Now shows all layers with issues in one tab.</string>
+	<string>Glyphs 3 compatibility.</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright, Olli Meier, 2019</string>
 	<key>NSPrincipalClass</key>
 	<string>nodesCloseToZone</string>
 	<key>PyMainFileNames</key>
 	<array>
-		<string>../MacOS/main.py</string>
+		<string>plugin.py</string>
 	</array>
 </dict>
 </plist>

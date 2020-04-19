@@ -1,4 +1,5 @@
 # encoding: utf-8
+from __future__ import division, print_function, unicode_literals
 
 ###########################################################################################################
 #
@@ -19,6 +20,7 @@ from math import atan2, cos, pi, sin, degrees
 
 tolerance = 4
 
+@objc.python_method
 def closeToArea(tol, pos, size, y):
 
 	if size >= 0:
@@ -44,6 +46,7 @@ def closeToArea(tol, pos, size, y):
 		else:
 			return False
 
+@objc.python_method
 def closeEnough(value1, value2, tolerance):
 	diff = value1 - value2
 
@@ -52,6 +55,7 @@ def closeEnough(value1, value2, tolerance):
 	else:
 		return False
 
+@objc.python_method
 def drawTriangle(node, scale):
 	size = 5 * scale
 	position = (node.x, node.y)
@@ -62,14 +66,15 @@ def drawTriangle(node, scale):
 	t.translateXBy_yBy_(x, y)
 	myPath = NSBezierPath.alloc().init()
 
-	myPath.moveToPoint_(( 0, 0))
-	myPath.relativeLineToPoint_( (10*size, 50*size))
-	myPath.relativeLineToPoint_( (40*size, -40*size))
+	myPath.moveToPoint_( (0,0) )
+	myPath.relativeLineToPoint_( (10*size, 50*size) )
+	myPath.relativeLineToPoint_( (40*size, -40*size) )
 
 	myPath.closePath()
 	myPath.transformUsingAffineTransform_(t)
 	myPath.fill()
 
+@objc.python_method
 def extremPoint(i, path, node):
 	xPoint = False
 	# make it more smart with checking the node before and after if offcurve point or not.
@@ -123,7 +128,8 @@ def extremPoint(i, path, node):
 	else:
 		return False
 
-def allnodesWithIssues(layer):
+@objc.python_method
+def allNodesWithIssues(layer):
 	nodes = []
 
 	master = layer.associatedFontMaster()
@@ -140,25 +146,51 @@ def allnodesWithIssues(layer):
 	return nodes
 
 class nodesCloseToZone(ReporterPlugin):
-
+	
+	@objc.python_method
 	def settings(self):
-		self.menuName = Glyphs.localize({'en': u'Nodes Close To Zones'})
+		self.menuName = Glyphs.localize({
+			'en': 'Nodes Close To Zones',
+			'de': 'Punkte knapp neben Zonen',
+			'fr': 'nœuds proches des zones',
+			'es': 'nodos cerca de zonas',
+			'pt': 'nós perto de zonas',
+			})
 		self.generalContextMenus = [
-			{'name': Glyphs.localize({'en': u'New Tab: Nodes Close to Zone'}), 'action': self.newTabNodesCloseToZone},
+			{
+				'name': Glyphs.localize({
+					'en': 'New Tab with %s'%self.menuName,
+					'de': 'Neuer Tab mit Punkten knapp neben Zonen',
+					'fr': 'Nouveau onglet avec %s'%self.menuName,
+					'es': 'Nuevo pestaña con %s'%self.menuName,
+					'pt': 'Nova guia %s'%self.menuName,
+					}), 
+				'action': self.newTabNodesCloseToZone_,
+			},
 		]
 
+	@objc.python_method
 	def drawText(self, layer):
-		nodesWithIssues = allnodesWithIssues(layer)
+		nodesWithIssues = allNodesWithIssues(layer)
 		for node in nodesWithIssues:
-			self.drawTextAtPoint('Close to Alignmentzone', NSPoint(node.x, node.y))
-
+			self.drawTextAtPoint(
+			Glyphs.localize({
+				'en': 'close to zone',
+				'de': 'knapp neben Zone',
+				'fr': 'proche de zone',
+				'es': 'cerca de zona',
+				'pt': 'perto de zona',
+				}),
+			node.position)
+	
+	@objc.python_method
 	def drawShape(self, layer):
-		scale =  1#0.5 / self.getScale()
-		nodesWithIssues = allnodesWithIssues(layer)
+		scale =  1 #0.5 / self.getScale()
+		nodesWithIssues = allNodesWithIssues(layer)
 		for node in nodesWithIssues:
 			drawTriangle(node, scale)
 
-	def newTabNodesCloseToZone(self):
+	def newTabNodesCloseToZone_(self, sender=None):
 		font = Glyphs.font
 		collectNames = []
 		collectLayerID = []
@@ -191,12 +223,15 @@ class nodesCloseToZone(ReporterPlugin):
 			Attributes = { "GSLayerIdAttrib": collectLayerID[i] }
 			currentTab.textStorage().text().addAttributes_range_( Attributes, rangeHighest )
 
+	@objc.python_method
 	def foreground(self, layer):
 		self.drawText(layer)
-
+	
+	@objc.python_method
 	def inactiveLayerForeground(self, layer):
 		self.drawShape(layer)
 
+	@objc.python_method
 	def __file__(self):
 		"""Please leave this method unchanged"""
 		return __file__
