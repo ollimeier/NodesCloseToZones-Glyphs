@@ -168,20 +168,19 @@ class nodesCloseToZone(ReporterPlugin):
 				'action': self.newTabNodesCloseToZone_,
 			},
 		]
+		self.warningString = Glyphs.localize({
+			'en': 'close to zone',
+			'de': 'knapp neben Zone',
+			'fr': 'proche de zone',
+			'es': 'cerca de zona',
+			'pt': 'perto de zona',
+			})
 
 	@objc.python_method
 	def drawText(self, layer):
 		nodesWithIssues = allNodesWithIssues(layer)
 		for node in nodesWithIssues:
-			self.drawTextAtPoint(
-			Glyphs.localize({
-				'en': 'close to zone',
-				'de': 'knapp neben Zone',
-				'fr': 'proche de zone',
-				'es': 'cerca de zona',
-				'pt': 'perto de zona',
-				}),
-			node.position)
+			self.drawTextAtPoint(self.warningString,node.position)
 	
 	@objc.python_method
 	def drawShape(self, layer):
