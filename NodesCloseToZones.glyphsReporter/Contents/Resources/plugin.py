@@ -213,6 +213,7 @@ class nodesCloseToZone(ReporterPlugin):
 	def drawText(self, layer):
 		nodesWithIssues = allNodesWithIssues(layer)
 		for node in nodesWithIssues:
+			drawTriangle(node, 0.05)
 			self.drawTextAtPoint(self.warningString,node.position)
 	
 	@objc.python_method
