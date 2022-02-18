@@ -129,6 +129,34 @@ def extremPoint(i, path, node):
 		return False
 
 @objc.python_method
+def _get_tolerance(master):
+	'''
+	Based on GlyphsApp 3 stems, adjust the tolerance
+	:param master: GlyphsApp master
+	:return: value of stems thinkness (avarage) or None
+	'''
+	stem_values = []
+	try:
+		for s in master.stems:
+			stem_values.append(s)
+	except Exception:
+		# return None if GlyphsApp version does not support .stems
+		pass
+
+	if len(stem_values) == 0:
+		return tolerance
+
+	avarage = sum(stem_values) / len(stem_values)
+	if avarage >= tolerance:
+		return tolerance
+
+	avarage = avarage - 1
+	if avarage < 1:
+		avarage = 1
+
+	return avarage
+
+@objc.python_method
 def allNodesWithIssues(layer):
 	nodes = []
 
@@ -136,11 +164,16 @@ def allNodesWithIssues(layer):
 	if layer.hasCorners():
 		layer = layer.copyDecomposedLayer() #orphan layer
 
-	for path in layer.paths:
+	tol = _get_tolerance(master)
+
+	l_copy = layer.copy()
+	l_copy.removeOverlap()
+
+	for path in l_copy.paths:
 		for i, node in enumerate(path.nodes):
 			if node.type != 'offcurve':
 				for zone in master.alignmentZones:
-					if closeToArea(tolerance, zone.position, zone.size, node.y):
+					if closeToArea(tol, zone.position, zone.size, node.y):
 						if extremPoint(i, path, node):
 							nodes.append(node)
 	return nodes
@@ -195,22 +228,9 @@ class nodesCloseToZone(ReporterPlugin):
 		collectLayerID = []
 		for g in font.glyphs:
 			for layer in g.layers:
-				hasIssues = False
-				master = layer.associatedFontMaster()
-				for path in layer.paths:
-					for i, node in enumerate(path.nodes):
-						if node.type != 'offcurve':
-							for zone in master.alignmentZones:
-								if closeToArea(tolerance, zone.position, zone.size, node.y):
-									hasIssues = extremPoint(i, path, node)
-									break
-				if hasIssues:
+				if allNodesWithIssues(layer):
 					collectNames.append('/%s' % g.name)
 					collectLayerID.append(layer.layerId)
-			#if hasIssues:
-			#	collectNames.append('/%s' % g.name)
-		#collectNames = "".join(collectNames)
-		#font.newTab(collectNames)
 
 		Glyphs.currentDocument.windowController().addTabWithString_("".join(collectNames))
 		for i, character in enumerate(collectNames):
