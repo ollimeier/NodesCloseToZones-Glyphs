@@ -17,13 +17,13 @@
 	<key>CFBundleVersion</key>
 	<string>14</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.0</string>
+	<string>2.1</string>
 	<key>UpdateFeedURL</key>
 	<string>http://olli-meier.de</string>
 	<key>productPageURL</key>
 	<string>https://github.com/moontypespace/omPlugins/tree/master/NodesCloseToZones.glyphsReporter</string>
 	<key>productReleaseNotes</key>
-	<string>Glyphs 3 compatibility.</string>
+	<string>Improvements: better handling of hairline masters + ignore nodes inside a contour.</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright, Olli Meier, 2019</string>
 	<key>NSPrincipalClass</key>
