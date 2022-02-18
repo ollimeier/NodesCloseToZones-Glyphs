@@ -173,7 +173,7 @@ def allNodesWithIssues(layer):
 		for i, node in enumerate(path.nodes):
 			if node.type != 'offcurve':
 				for zone in master.alignmentZones:
-					if closeToArea(tol, zone.position, zone.size, node.y):
+					if closeToArea(tol, zone.position, zone.size, round(node.y)):
 						if extremPoint(i, path, node):
 							nodes.append(node)
 	return nodes
