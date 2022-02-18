@@ -57,7 +57,7 @@ def closeEnough(value1, value2, tolerance):
 
 @objc.python_method
 def drawTriangle(node, scale):
-	size = 5 * scale
+	size = 1 * scale
 	position = (node.x, node.y)
 	x, y = position
 
