@@ -229,9 +229,10 @@ class nodesCloseToZone(ReporterPlugin):
 		collectLayerID = []
 		for g in font.glyphs:
 			for layer in g.layers:
-				if allNodesWithIssues(layer):
-					collectNames.append('/%s' % g.name)
-					collectLayerID.append(layer.layerId)
+				if layer.isSpecialLayer or layer.isMasterLayer:
+					if allNodesWithIssues(layer):
+						collectNames.append('/%s' % g.name)
+						collectLayerID.append(layer.layerId)
 
 		Glyphs.currentDocument.windowController().addTabWithString_("".join(collectNames))
 		for i, character in enumerate(collectNames):
