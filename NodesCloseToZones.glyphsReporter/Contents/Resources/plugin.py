@@ -234,15 +234,18 @@ class nodesCloseToZone(ReporterPlugin):
 						collectNames.append('/%s' % g.name)
 						collectLayerID.append(layer.layerId)
 
-		Glyphs.currentDocument.windowController().addTabWithString_("".join(collectNames))
+		font.newTab("".join(collectNames))
+
+		View = Glyphs.currentDocument.windowController().activeEditViewController().graphicView()
+		rangeHighest = NSRange()
+
 		for i, character in enumerate(collectNames):
-			rangeHighest = NSRange()
 			rangeHighest.location = i
 			rangeHighest.length = 1
-			currentEditViewController = Glyphs.currentDocument.windowController().activeEditViewController()
-			currentTab = currentEditViewController.graphicView()
 			Attributes = { "GSLayerIdAttrib": collectLayerID[i] }
-			currentTab.textStorage().text().addAttributes_range_( Attributes, rangeHighest )
+
+			View.textStorage().text().addAttributes_range_( Attributes, rangeHighest )
+			View.setScale_(View.scale())
 
 	@objc.python_method
 	def foreground(self, layer):
