@@ -225,34 +225,35 @@ class nodesCloseToZone(ReporterPlugin):
 
 	def newTabNodesCloseToZone_(self, sender=None):
 		font = Glyphs.font
-		collectNames = []
-		collectLayerID = []
+		collectLayers = []
 		for g in font.glyphs:
 			for layer in g.layers:
 				if layer.isSpecialLayer or layer.isMasterLayer:
 					if allNodesWithIssues(layer):
-						collectNames.append('/%s' % g.name)
-						collectLayerID.append(layer.layerId)
+						collectLayers.append(layer)
+		font.newTab(collectLayers)
 
-		font.newTab("".join(collectNames))
-
-		View = Glyphs.currentDocument.windowController().activeEditViewController().graphicView()
-		rangeHighest = NSRange()
-
-		for i, character in enumerate(collectNames):
-			rangeHighest.location = i
-			rangeHighest.length = 1
-			Attributes = { "GSLayerIdAttrib": collectLayerID[i] }
-
-			View.textStorage().text().addAttributes_range_( Attributes, rangeHighest )
-			View.setScale_(View.scale())
+	@objc.python_method
+	def shouldDraw(self):
+		try:
+			windowController = self.controller.view().windowController()
+		except:
+			windowController = self.controller.view().window().windowController()
+		currentToolName = windowController.toolDrawDelegate().className()
+		if currentToolName in ["GlyphsToolHand", "GlyphsToolText"]:
+			return False
+		return True
 
 	@objc.python_method
 	def foreground(self, layer):
+		if not self.shouldDraw():
+			return
 		self.drawText(layer)
 	
 	@objc.python_method
 	def inactiveLayerForeground(self, layer):
+		if not self.shouldDraw():
+			return
 		self.drawShape(layer)
 
 	@objc.python_method
