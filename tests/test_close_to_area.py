@@ -29,8 +29,9 @@ def _load_plugin_module():
         / "plugin.py"
     )
     spec = importlib.util.spec_from_file_location("nodes_close_to_zones_plugin", plugin_path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError("Could not load plugin module spec")
     module = importlib.util.module_from_spec(spec)
-    assert spec.loader is not None
     spec.loader.exec_module(module)
     return module
 
@@ -42,6 +43,21 @@ class TestCloseToArea(unittest.TestCase):
 
     def test_returns_true_for_point_just_below_positive_zone(self):
         self.assertTrue(self.plugin.closeToArea(4, 100, 20, 99))
+
+    def test_returns_false_for_point_inside_zone(self):
+        self.assertFalse(self.plugin.closeToArea(4, 100, 20, 110))
+
+    def test_returns_true_for_point_below_lower_boundary_of_negative_size_zone(self):
+        self.assertTrue(self.plugin.closeToArea(4, 200, -20, 179))
+
+    def test_returns_false_for_point_far_from_negative_size_zone(self):
+        self.assertFalse(self.plugin.closeToArea(4, 200, -20, 150))
+
+    def test_returns_false_for_point_inside_negative_size_zone(self):
+        self.assertFalse(self.plugin.closeToArea(4, 200, -20, 190))
+
+    def test_returns_false_for_point_on_lower_boundary_of_negative_size_zone(self):
+        self.assertFalse(self.plugin.closeToArea(4, 200, -20, 180))
 
 
 if __name__ == "__main__":
