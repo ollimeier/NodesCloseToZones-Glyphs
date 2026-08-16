@@ -164,6 +164,11 @@ def allNodesWithIssues(layer):
 	if layer.hasCorners():
 		layer = layer.copyDecomposedLayer() #orphan layer
 
+	if master is None:
+		# no master, fallback/return empty list
+		# related to https://github.com/ollimeier/NodesCloseToZones-Glyphs/issues/5
+		return nodes
+
 	tol = _get_tolerance(master)
 
 	l_copy = layer.copy()
