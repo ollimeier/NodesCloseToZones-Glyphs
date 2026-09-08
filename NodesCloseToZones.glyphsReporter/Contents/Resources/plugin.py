@@ -13,7 +13,7 @@ from __future__ import division, print_function, unicode_literals
 ###########################################################################################################
 
 import objc
-from AppKit import NSRange
+from AppKit import NSRange, NSColor, NSAffineTransform, NSBezierPath
 from GlyphsApp import *
 from GlyphsApp.plugins import *
 from math import atan2, cos, pi, sin, degrees
